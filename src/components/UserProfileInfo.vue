@@ -3,23 +3,26 @@
         <div class="card-body">
             <div class="row">
                 <div class="col-3">
-                    <img class="img-fluid" src="https://cdn.acwing.com/media/user/profile/photo/155759_lg_bcfd66177c.jpg" alt="">
+                    <img class="img-fluid"
+                        src="https://cdn.acwing.com/media/user/profile/photo/155759_lg_bcfd66177c.jpg" alt="">
                 </div>
                 <div class="col-9">
-                    <div class="username">{{fullname}}</div>
-                    <div class="fans">粉丝：{{user.followerCount}}</div>
-                    <button @click="follow" v-if="!user.isFollowed" type="button" class="btn btn-info btn-sm">关注</button>
-                    <button @click="unfollow" v-if="user.isFollowed" type="button" class="btn btn-info btn-sm">取消关注</button>
+                    <div class="username">{{ fullname }}</div>
+                    <div class="fans">粉丝：{{ user.followerCount }}</div>
+                    <button @click="follow" v-if="!user.isFollowed" type="button"
+                        class="btn btn-info btn-sm">关注</button>
+                    <button @click="unfollow" v-if="user.isFollowed" type="button"
+                        class="btn btn-info btn-sm">取消关注</button>
                 </div>
             </div>
         </div>
     </div>
 
 
-    
+
 </template>
       
-<script> 
+<script>
 import { computed } from 'vue';
 
 export default {
@@ -53,7 +56,7 @@ export default {
       
 <style scoped>
 img {
-  border-radius: 50%;
+    border-radius: 50%;
 }
 
 .username {
