@@ -14,16 +14,26 @@
           <li class="nav-item">
             <router-link class="nav-link" :to="{ name: 'UserList' }">好友列表</router-link>
           </li>
-          <li class="nav-item">
+          <!-- <li class="nav-item">
             <router-link class="nav-link" :to="{ name: 'UserProfile', params: { userId: 2 } }">用户动态</router-link>
-          </li>
+          </li> -->
         </ul>
-        <ul class="navbar-nav">
+        <ul class="navbar-nav" v-if="!$store.state.user.is_login">
           <li class="nav-item">
             <router-link class="nav-link" :to="{ name: 'Login' }">登录</router-link>
           </li>
           <li class="nav-item">
             <router-link class="nav-link" :to="{ name: 'Register' }">注册</router-link>
+          </li>
+        </ul>
+        <ul class="navbar-nav" v-else>
+          <li class="nav-item">
+            <router-link class="nav-link" :to="{ name: 'UserProfile', params: { userId: $store.state.user.id } }">{{
+              $store.state.user.username
+            }}</router-link>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" style="cursor: pointer;" @click="logout">退出</a>
           </li>
         </ul>
 
@@ -33,8 +43,20 @@
 </template>
 
 <script>
+import { useStore } from 'vuex';
+
 export default {
   name: "navBar",
+  setup() {
+    const store = useStore();
+    const logout = () => {
+      store.commit('logout');
+    }
+
+    return {
+      logout,
+    }
+  }
 }
 </script>
 

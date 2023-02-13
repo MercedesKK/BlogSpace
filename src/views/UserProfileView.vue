@@ -3,7 +3,7 @@
     <div class="row">
       <div class="col-3">
         <UserProfileInfo @follow="follow" @unfollow="unfollow" :user="user" />
-        <UserProfileWrite @postAPost="postAPost" />
+        <UserProfileWrite v-if="is_me" @postAPost="postAPost" />
       </div>
 
       <div class="col-9">
@@ -21,6 +21,9 @@ import UserProfilePosts from '@/components/UserProfilePosts.vue';
 import { reactive } from 'vue';
 import UserProfileWrite from '@/components/UserProfileWrite.vue';
 import { useRoute } from 'vue-router';
+import $ from 'jquery';
+import { useStore } from 'vuex';
+import { computed } from 'vue';
 
 
 export default {
@@ -33,39 +36,46 @@ export default {
   },
 
   setup() {
+    const store = useStore();
     const route = useRoute();
-    const userId = route.params.userId;
-    console.log(userId);
+    const userId = parseInt(route.params.userId);
+    const user = reactive({});
+    const posts = reactive({});
 
-    const user = reactive({
-      id: 1,
-      username: "zhangjingkai",
-      lastname: "Zhang",
-      firstname: "Jingkai",
-      followerCount: 0,
-      isFollowed: false,
+    $.ajax({
+      url: "https://app165.acapp.acwing.com.cn/myspace/getinfo/",
+      type: "GET",
+      data: {
+        user_id: userId,
+      },
+      headers: {
+        'Authorization': "Bearer " + store.state.user.access,
+      },
+      success(resp) {
+        user.id = resp.id;
+        user.username = resp.username;
+        user.photo = resp.photo;
+        user.followerCount = resp.followerCount;
+        user.isFollowed = resp.isFollowed;
+      }
     });
 
-    const posts = reactive({
-      count: 3,
-      posts: [
-        {
-          id: 1,
-          userId: 1,
-          content: "123",
-        },
-        {
-          id: 2,
-          userId: 1,
-          content: "1234",
-        },
-        {
-          id: 3,
-          userId: 1,
-          content: "1232",
-        },
-      ]
+    $.ajax({
+      url: "https://app165.acapp.acwing.com.cn/myspace/post/",
+      type: "GET",
+      data: {
+        user_id: userId,
+      },
+      headers: {
+        'Authorization': "Bearer " + store.state.user.access,
+      },
+      success(resp) {
+        posts.count = resp.length;
+        posts.posts = resp;
+      }
     })
+
+
 
     const follow = () => {
       if (user.isFollowed) return;
@@ -77,7 +87,7 @@ export default {
       if (!user.isFollowed) return;
       user.isFollowed = false;
       user.followerCount--;
-    }
+    };
 
     const postAPost = (content) => {
       posts.count++;
@@ -86,7 +96,9 @@ export default {
         userId: 1,
         content: content,
       })
-    }
+    };
+
+    const is_me = computed(() => userId === store.state.user.id);
 
     return {
       user,
@@ -94,6 +106,7 @@ export default {
       unfollow,
       posts,
       postAPost,
+      is_me,
     }
   }
 }

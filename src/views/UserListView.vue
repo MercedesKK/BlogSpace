@@ -1,9 +1,9 @@
 <template>
   <ContentBase>
-    <div class="card" v-for="user in users" :key="user.id">
+    <div class="card" v-for="user in users" :key="user.id" @click="openUserProfile(user.id)">
       <div class="card-body">
         <div class="row">
-          <div class="col-1">
+          <div class="col-1 img-field">
             <img class="img-fluid" :src="user.photo" alt="">
           </div>
           <div class="col-11">
@@ -20,6 +20,8 @@
 import ContentBase from '@/components/ContentBase.vue';
 import $ from 'jquery';
 import { ref } from 'vue';
+import router from '@/router';
+import { useStore } from 'vuex';
 
 export default {
   name: 'UserListView',
@@ -28,6 +30,7 @@ export default {
   },
 
   setup() {
+    const store = useStore();
     let users = ref([]);
 
     $.ajax({
@@ -38,9 +41,25 @@ export default {
       }
     });
 
+    const openUserProfile = userId => {
+      if (store.state.user.is_login) {
+        router.push({
+          name: "UserProfile",
+          params: {
+            userId,
+          }
+        })
+      }
+      else {
+        router.push({
+          name: "Login",
+        });
+      }
+    }
 
     return {
       users,
+      openUserProfile,
     }
   }
 
@@ -71,5 +90,11 @@ img {
 
 .card:hover {
   box-shadow: 2px 2px 10px lightgray;
+}
+
+.img-field {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 </style>
