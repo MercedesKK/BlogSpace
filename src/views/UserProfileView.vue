@@ -7,7 +7,7 @@
       </div>
 
       <div class="col-9">
-        <UserProfilePosts :posts="posts" />
+        <UserProfilePosts :user="user" :posts="posts" @deleteAPost="deleteAPost" />
 
       </div>
     </div>
@@ -98,6 +98,13 @@ export default {
       })
     };
 
+    const deleteAPost = (postId) => {
+      console.log(11);
+      posts.posts = posts.posts.filter(post => post.id !== postId);
+      posts.count = posts.posts.length;
+
+    };
+
     const is_me = computed(() => userId === store.state.user.id);
 
     return {
@@ -107,6 +114,7 @@ export default {
       posts,
       postAPost,
       is_me,
+      deleteAPost,
     }
   }
 }
